@@ -1,495 +1,776 @@
 {
-    "order": ["intro", "difficulty", "bodyType", "bodyBase", "bodyMods"],
-    "intro": {
-        "desc": ["Congratulations! You are now a contestant on the popular television game show \"Slut Life.\" For the next year, you will be living in an apartment provided by us together with the other contestants. All your actions will be monitored and broadcasted constantly to a universal audience. At the end of the year, you can choose from a list of rewards. Breaking any rules will result in the instant revocation of your reward.",
-                 "As part of the show, you will be transported to another planet for the duration of your stay. Instead of the normal 24 hour days you're used to, each day on this planet lasts for 32 hours. While this may seem tiring at first, your body will adjust rather quickly. After you're done, you can either stay here or go back to Earth."],
-        "type": "cosmetic"
-    },
-    "difficulty": {
-        "name": "Difficulty",
-        "desc": "To begin, first select a difficulty from the section immediately below. This will determine your starting number of points, tracked on the top of this page. Taking options later in will add or subtract from this point total. You must have greater than or equal to zero points at the end of this CYOA, and while you do not have to obey the restrictions in the options' descriptions it's a bit cheating not to. Good luck!",
-        "type": "single",
-        "required": true,
-        "choices": {
-            "diffEasy": {
-                "name": "Easy Mode",
-                "points": 40
-            },
-            "diffMedium": {
-                "name": "Medium Mode",
-                "points": 20
-            },
-            "diffHard": {
-                "name": "Hard Mode",
-                "points": 0
-            },
-            "diffSlave": {
-                "name": "Slave to the Show Mode",
-                "points": -150
-            },
-            "diffAnon": {
-                "name": "Anon Must Die Mode",
-                "desc": "Minimum of 3 owners, minimum of 5 punishments, maximum of 1 job.",
-                "points": -200,
-                "requires": {"type": "and", "choices": [{"type": "count", "category": "owners", "min": 3}, {"type": "count", "category": "punishments", "min": 5}, {"type": "count", "category": "jobs", "max": 1}]},
-                "requiresFailWarning": true
-            }
-        }
-    },
-    "bodyType": {
-        "name": "Body Type",
-        "desc": "As part of the show, you will be given a completely new body for +40 credits. Alternatively, you can elect to keep your current body for +20 credits; ignore the rest of this section if you choose to do so. If you do choose to create a new body, you will need to freely decide whether you start with:",
-        "type": "single",
-        "required": true,
-        "choices": {
-            "newBody": {
-                "name": "Build-A-Body",
-                "desc": "You are creating your own custom base form from the provided list of options.",
-                "points": 40
-            },
-            "oldBody": {
-                "name": "Keep Your Old Body",
-                "desc": "You are going to keep the base form you inhabit right now.",
-                "points": 20
-            }
-        }
-    },
-    "bodyBase": {
-        "name": "Body Baseline",
-        "desc": "If your starting age is 10 - 17, you will start at a \"reduced\" version and \"grow into\" what you chose. Hyperfertile vaginas have a 100% pregnancy rate among the same species parents, a 20% chance of being impregnated by a father of a different species (half-human species are considered the same species genetically), and do not respond to chemical contraceptives. Each penis has its own set of testicles, however they can be removed if you don't want them. Embedded testicles overrides testicle size. Girth refers to diameter, in this case. Genitals determine sex: male is penis only, female is vagina only, futanari/hermaphrodite is both vagina and penis. If you look/act female but have a penis, you are considered a trap and can override non-male-only restrictions.",
-        "type": "table",
-        "requires": {"type": "is", "choice": "bodyType", "value": "newBody"},
-        "choices": {
-            "age": {
-                "name": "Age",
-                "options": ["10-18", "19-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-80"]
-            },
-            "height": {
-                "name": "Height",
-                "options": ["2'5\"-3'5\"", "3'6\"-4'5\"", "4'6\"-5'", "5'1\"-5'5\"", "5'6\"-6'", "6'1\"-6'5\"", "6'6\"-7'", "7'1\"-10'"]
-            },
-            "face": {
-                "name": "Face",
-                "options": ["Handsome", "Manly", "Boyish", "Androgynous", "Girly", "Womanly", "Beautiful", "Bimbo"],
-            },
-            "chest": {
-                "name": "Chest",
-                "options": ["Flat", "A-Cup", "B-Cup", "C-Cup", "D-Cup", "E-Cup", "F-Cup", "> F-Cup"]
-            },
-            "ass": {
-                "name": "Ass",
-                "options": ["Flat", "Petite", "Normal", "Apple", "Bubble", "Badonk", "Wide", "Double Wide"]
-            },
-            "genitals": {
-                "name": "Genitals",
-                "options": ["Penis", "Sexless", "Nonfertile Vagina", "Fertile Vagina"]
-            },
-            "penisSize": {
-                "name": "Penis Size",
-                "options": ["1\"-3\"", "3.1\"-6\"", "6.1\"-10\"", "10.1\"-16\""]
-            },
-            "penisGirth": {
-                "name": "Penis Girth",
-                "options": ["0.25\"-0.75\"", "0.76\"-0.99\"", "1\"-1.5\"", "1.6\"-3\""]
-            },
-            "testicleSize": {
-                "name": "Testicle Size",
-                "options": ["Half Size", "Normal Size", "1.5x Size", "Double Size"]
-            }
-        }
-    },
-    "bodyMods": {
-        "name": "Body Mods",
-        "desc": "Pick as many as you wish.",
-        "type": "multi",
-        "choices": {
-            "addDick": {
-                "name": "Add Dick", 
-                "desc": "Extra penises start at 5\" length/0.8\" girth.  One purchase allows any number of extra dicks.", 
-                "points": -5,
-                "requires": {"type": "not", "choice": {"type": "is", "choice": "genitals", "value": "Sexless"}},
-                "requireDesc": "Cannot be sexless",
-                "repeat": -1
-            },
-            "addTesticles": {
-                "name": "Add Testicles",
-                "desc": "Extra pairs of testacles start at normal size.  One purchase allows any number of pairs of testicles.  Requires at least one penis",
-                "points": -5,
-                "requires": {"type": "or", "choices": [{"type": "is", "choice": "genitals", "value": "Penis"}, {"type": "exists", "choice": "addDick"}]},
-                "requireDesc": "Requires at least one penis.",
-                "repeat": -1
-            },
-            "addBreasts": {
-                "name": "Add Breasts",
-                "desc": "Extra pairs of breasts start at B-cup.",
-                "points": -5,
-                "repeat": -1
-            },
-            "hyperFertileVagina": {
-                "name": "Hyperfertile Vagina",
-                "desc": "Your vagina will be *upgraded* to a hyperfertile version.  Requires a fertile vagina.",
-                "points": 10,
-                "requires": {"type": "is", "choice": "genitals", "value": "Fertile Vagina"},
-                "requireDesc": "Requires a fertile vagina"
-            },
-            "hormones": {
-                "name": "Hormones",
-                "desc": "You will receive hormone treatment to make your body more feminine physically.",
-                "points": -1
-            },
-            "hairRemoval": {
-                "name": "Hair Removal",
-                "desc": "We'll permanently remove any hair on your body that you don't want.",
-                "points": -1
-            },
-            "masochist": {
-                "name": "Masochist",
-                "desc": "You now feel pleasure from pain.",
-                "points": -3,
-                "addons": {
-                    "amount": 1,
-                    "extremeMasochist": {
-                        "name": "Extreme Masochist",
-                        "desc": "You still feel the pain, causing you to become 'confused'.  Requires Masochist",
-                        "points": 2,
-                    },
-                    "manualControl": {
-                        "name": "Manual Control",
-                        "desc": "You can choose whether or not you feel pleasure from pain.  Requires Masochist.",
-                        "points": -2,
-                    }
-                }
-            },
-            "cumConnoisseur": {
-                "name": "Cum Connoisseur",
-                "desc": "You love the taste of semen.  Not only do you find it to be delicious, but it acts as an aphrodisiac that wears off after about an hour.",
-                "points": 1
-            },
-            "sensitiveBody": {
-                "name": "Sensitive Body",
-                "desc": "Your entire body is now extra sensitive.",
-                "points": 1,
-                "addons": {
-                    "erogenousBody": {
-                        "name": "Erogenous Body",
-                        "desc": "Your entire body is now an erogenous zone.  Requires Sensitive Body.",
-                        "points": 3,
-                        "addons": {
-                            "selectiveErogenousBody": {
-                                "name": "Selective Erogenous Body",
-                                "desc": "You can choose what parts of your body act as erogenous zones.  Requires Erogenous Body.",
-                                "points": -3
-                            },
-                            "rightMomentErogenousBody": {
-                                "name": "Right Moment Erogenous Body",
-                                "desc": "Your body's erogenous zones will only be 'active' when you're horny.  Requires Erogenous Body.",
-                                "points": -1
-                            }
-                        }
-                    }
-                }
-            },
-            "amputee": {
-                "name": "Amputee",
-                "desc": "You can choose any of your four limbs to have cut off permanently.  Cannot be taken with Detachable Limbs or Android.",
-                "points": 15,
-                "type": "list",
-                "options": ["Left Arm", "Right Arm", "Left Leg", "Right Leg"],
-                "optionsRepeat": false,
-                "requires": {"type": "not", "choice": {"type": "and", "choices": [{"type": "exists", "choice": "detacableLimbs"}, {"type": "exists", "choice": "android"}]}},
-                "addons": {
-                    "amount": -1,
-                    "accessible": {
-                        "name": "Accessible",
-                        "desc": "Your living space will be modified to make it more accessible to you.  Requires Apartment or higher.",
-                        "points": -10,
-                        "requires": {"type": "is", "choice": "housing", "value": "apartment"},
-                        "requireDesc": "Requires Apartment"
-                    },
-                    "prosthetics": {
-                        "name": "Prosthetics",
-                        "desc": "Well will provide state of the art artificial limbs for all of your limbs that were cut off... after the show.",
-                        "points": -20
-                    },
-                    "doubleAmputee": {
-                        "unlisted": true,
-                        "name": "Double Amuptee",
-                        "points": 10,
-                        "type": "auto",
-                        "requires": {"type": "and", "choices": [{"type": "is", "choice": "amputee", "value": "Left Arm"}, {"type": "is", "choice": "amputee", "value": "Right Arm"}]}
-                    },
-                    "quadAmputee": {
-                        "unlisted": true,
-                        "name": "Quadruple Amuptee",
-                        "points": 30,
-                        "type": "auto",
-                        "requires": {"type": "and", "choices": [{"type": "is", "choice": "amputee", "value": "Left Arm"}, {"type": "is", "choice": "amputee", "value": "Right Arm"}, {"type": "is", "choice": "amputee", "value": "Left Leg"}, {"type": "is", "choice": "amputee", "value": "Right Leg"}]}
-                    }
-                }
-            },
-            "magicHair": {
-                "name": "Magic Hair",
-                "desc": "Your body will maintain a constant length of hair (on your head).",
-                "points": -1
-            },
-            "refractoryPeriod": {
-                "name": "Refractory Period",
-                "desc": "You no longer have to deal with a refractory period.",
-                "points": -1
-            },
-            "menstruationControl": {
-                "name": "Menstruation Control",
-                "desc": "You no longer have to deal with menstruation or its effects.",
-                "points": -1
-            },
-            "gagReflex": {
-                "name": "Gag Reflex",
-                "desc": "Your gag reflex is removed.",
-                "points": -1
-            }, 
-            "flexibleHoles": {
-                "name": "Flexible Holes",
-                "desc": "Makes all of your holes much more flexible than they would be naturally. Also increases natural lubrication.",
-                "points": -1,
-                "addons": {
-                    "amount": 1,
-                    "tightFit": {
-                        "name": "Tight Fit",
-                        "desc": "You can accomodate almost anything, but always just barely. Every time will be like the first.",
-                        "points": 2
-                    },
-                    "easyFit": {
-                        "name": "Easy Fit",
-                        "desc": "You can accomodate anything with ease. Sit back and enjoy the ride.",
-                        "points": -2
-                    }
-                }
-            },
-            "openCervix": {
-                "name": "Open Cervix",
-                "desc": "Your womb can be entered with little effort. Requires a vagina.",
-                "points": -1,
-                "requires": {"type": "or", "choices": [{"type": "is", "choice": "genitals", "value": "Nonfertile Vagina"}, {"type": "is", "choice": "genitals", "value": "Fertile Vagina"}]}
-            },
-            "fuckableNipples": {
-                "name": "Fuckable nipples",
-                "desc": "You can now have nipple sex.",
-                "points": -1
-            },
-            "tattoo": {
-                "name": "Tattoo",
-                "desc": "Add a tattoo anywhere on your body. Gives +1 credit for 'lewd' tattoos (e.g. a dick).",
-                "points": 1,
-                "repeat": -1
-            },
-            "piercing": {
-                "name": "Piercing",
-                "desc": "Add a piercing anywhere on your body. Gives +1 credit for piercings in the following 'lewd' locations: tongue, navel, nipples, clit, septum, vagina, penis(es).",
-                "points": 1,
-                "repeat": -1
-            },
-            "symbolShapedPupils": {
-                "name": "Symbol-shaped pupils",
-                "desc": "Change the shape of your pupils to whatever you want.",
-                "points": -1,
-                "addons": {
-                    "indicator": {
-                        "name": "Indicator",
-                        "desc": "Your pupils will only change shape when you're horny.",
-                        "points": -1
-                    }
-                }
-            },
-            "heterochromia": {
-                "name": "Heterochromia",
-                "desc": "Select two eye colors (one for each eye) instead of one.",
-                "points": -1
-            },
-            "tentacleDick": {
-                "name": "Tentacle dick",
-                "desc": "Your penis(es) will be turned into prehensile tentacles. Requires at least one penis.",
-                "points": -2,
-                "requires": {"type": "or", "choices": [{"type": "is", "choice": "genitals", "value": "Penis"}, {"type": "exists", "choice": "addDick"}]},
-                "requireDesc": "Requires at least one penis."
-            },
-            "elasticTongue": {
-                "name": "Elastic tongue",
-                "desc": "You can now extend your tongue up to 12 inches outside of your mouth.",
-                "points": -2
-            },
-            "alwaysPerky": {
-                "name": "Always perky",
-                "desc": "You no longer need to wear a bra.",
-                "points": -1
-            },
-            "zincSupplements": {
-                "name": "Zinc supplements",
-                "desc": "Doubles your natural semen production. Requires at least one penis.",
-                "points": -1,
-                "requires": {"type": "or", "choices": [{"type": "is", "choice": "genitals", "value": "Penis"}, {"type": "exists", "choice": "addDick"}]},
-                "requireDesc": "Requires at least one penis."
-            },
-            "lactation": {
-                "name": "Lactation",
-                "desc": "Your body will be modified to make your breasts produce milk. Requires at least one set of A-cup or larger breasts.",
-                "points": -1,
-                "requires": {"type": "not", "choice": {"type": "is", "choice": "chest", "value": "Flat"}},
-                "requireDesc": "Requires A-Cup or larger breasts.",
-                "addons": {
-                    "highOuputLactate": {
-                        "name": "High-Output Breast Milk",
-                        "desc": "Doubles your natural breat milk production",
-                        "points": -2
-                    }
-                }
-            },
-            "easyDrainage": {
-                "name": "Easy Drainage",
-                "desc": "Your body now has a much higher volume when discharging fluids. You won't feel drained unless your body produces an unusally high amount of that fluid for some reason.",
-                "points": -2
-            },
-            "reloader": {
-                "name": "Reloader",
-                "desc": "After each orgasm, your body dramatically increased fluid production for a short time, making successive loads bigger instead of smaller.",
-                "points": -2
-            },
-            "easyPregnancy": {
-                "name": "Easy Pregnancy",
-                "desc": "Makes your pregnancies much more bearable.",
-                "requires": {"type": "is", "choice": "genitals", "value": "Fertile Vagina"},
-                "requireDesc": "Requires a fertile vagina",
-                "points": -3,
-                "addons": {
-                    "amount": 1,
-                    "pleasurablePregnancy": {
-                        "name": "Pleasurable Pregnancy",
-                        "desc": "During your pregnancy, your orgasms will be stronger and you will become more lustful. Giving birth will almost certainly cause you to climax several times.",
-                        "points": -2
-                    },
-                    "preferredSize": {
-                        "name": "Preferred Size",
-                        "desc": "Your belly will stop swelling after bewteen 6-9 months (your choice).",
-                        "points": -2
-                    },
-                    "fastPregnancy": {
-                        "name": "Fast Pregnancy",
-                        "desc": "Increases the speed of pregnancyies by an average of 80%",
-                        "points": -10
-                    }
-                }
-            },
-            "healthyBabies": {
-                "name": "Healthy Babies",
-                "desc": "Your babies will be strong and healthy.",
-                "requires": {"type": "is", "choice": "genitals", "value": "Fertile Vagina"},
-                "requireDesc": "Requires a fertile vagina",
-                "points": -1,
-                "addons": {
-                    "amount": -1,
-                    "geneticModificationBabies": {
-                        "name": "Genetic Modification",
-                        "desc": "You will be able to customize your baby. Use the body modification section.",
-                        "points": -5
-                    },
-                    "growthHormonesBabies": {
-                        "name": "Growth Hormones",
-                        "desc": "Your children will grow at an accelerated rate until they reach 5-16 (your choice). The accelerated growth rate is approximately 1 year per week.",
-                        "points": -8
-                    }
-                }
-            },
-            "embeddedTesticles": {
-                "name": "Embedded Testicles",
-                "desc": "Some (or all) of your testciles will be embedded inside your body. Excess skin will be removed.",
-                "points": -2,
-                "requires": {"type": "or", "choices": [{"type": "is", "choice": "genitals", "value": "Penis"}, {"type": "exists", "choice": "addDick"}]},
-                "requireDesc": "Requires at least one pair of testicles."
-            },
-            "retractablePenis": {
-                "name": "Retractable Penis",
-                "desc": "You can \"retract\" your penis(es) into your body to conceal them.",
-                "points": -2,
-                "requires": {"type": "or", "choices": [{"type": "is", "choice": "genitals", "value": "Penis"}, {"type": "exists", "choice": "addDick"}]},
-                "requireDesc": "Requires at least one penis."
-            },
-            "flexibleBody": {
-                "name": "Flexible Body",
-                "desc": "Your body is much more flexible. Good for yoga and doing splits.",
-                "points": -3
-            },
-            "reducedSleep": {
-                "name": "Reduced Sleep",
-                "desc": "Instead of 8 to 12 hours, your body can easily work with only needing to sleep for 4 hours.",
-                "points": -3,
-                "addons": {
-                    "noSleep": {
-                        "name": "No Sleep",
-                        "desc": "You no longer need to sleep. You won't feel tired from a lack of sleep.",
-                        "points": -5
-                    }
-                }
-            },
-            "perfectMetabolism": {
-                "name": "Perfect metabolism",
-                "desc": "Maintaining muscle ton'body condition is trivial, however you must consume at least 2,300 calories a day.",
-                "points": -5,
-                "addons": {
-                    "amount": -1,
-                    "opimizedDigestionD": {
-                        "name": "Optimized Digestion D",
-                        "desc": "You no longer need to defecate.",
-                        "points": -3
-                    },
-                    "opimizedDigestionU": {
-                        "name": "Optimized Digestion U",
-                        "desc": "You no longer need to urinate.",
-                        "points": -3
-                    }
-                }
-            },
-            "cleanliness": {
-                "name": "Cleanliness",
-                "desc": "You no longer need to shower/bathe. Also includes some \"internal parts\", such as teeth.",
-                "points": -5
-            },
-            "homeostasis": {
-                "name": "Perfect Homeostasis",
-                "desc": "Your body will maintain it's internal temperature perfectly, meaning you no longer need to wear clothes, even in sub-zero temperatures.",
-                "points": -10
-            },
-            "mindWipe": {
-                "name": "Mind Wipe",
-                "desc": "All of your memories from before you became a contestant will be permanently wiped. Note that this only affects your memories; you will retain all of your knowledge of things (e.g. how to ride a bike).",
-                "points": 10,
-                "addons": {
-                    "amount": -1,
-                    "tabulaRasa": {
-                        "name": "Tabula Rasa",
-                        "desc": "All of your knolwedge will be reset to the \"general knowledge\" of your age group as well.",
-                        "points": 15
-                    },
-                    "dissonance": {
-                        "name": "Dissonance",
-                        "desc": "Your previous memories will be restored after the show. Have fun with that.",
-                        "points": 10
-                    }
-                }
-            },
-            "detacableLimbs": {
-                "name": "Detachable Limbs",
-                "desc": "Both of your arms and legs are removable now. It is up to you to find/purchase different limbs, but it probably isn't that hard to find them online somewhere.",
-                "points": -10,
-                "requires": {"type": "not", "choice": {"type": "exists", "choice": "amputee"}},
-                "requireDesc": "Cannot be taken with amputee"
-            },
-            "detacablePenis": {
-                "name": "Detachable Penis",
-                "desc": "Your penis(es) are removable now. Any dildo you attach in place will be fully functional.",
-                "points": -3,
-                "requires": {"type": "or", "choices": [{"type": "is", "choice": "genitals", "value": "Penis"}, {"type": "exists", "choice": "addDick"}]},
-                "requireDesc": "Requires at least one penis."
-            },
-
-        }
-    }
+	"order": [
+		"intro",
+		"difficulty",
+		"bodyType",
+		"bodyBase",
+		"bodyMods"
+	],
+	"intro": {
+		"desc": [
+			"Congratulations! You are now a contestant on the popular television game show \"Slut Life.\" For the next year, you will be living in an apartment provided by us together with the other contestants. All your actions will be monitored and broadcasted constantly to a universal audience. At the end of the year, you can choose from a list of rewards. Breaking any rules will result in the instant revocation of your reward.",
+			"As part of the show, you will be transported to another planet for the duration of your stay. Instead of the normal 24 hour days you're used to, each day on this planet lasts for 32 hours. While this may seem tiring at first, your body will adjust rather quickly. After you're done, you can either stay here or go back to Earth."
+		],
+		"type": "cosmetic"
+	},
+	"difficulty": {
+		"name": "Difficulty",
+		"desc": "To begin, first select a difficulty from the section immediately below. This will determine your starting number of points, tracked on the top of this page. Taking options later in will add or subtract from this point total. You must have greater than or equal to zero points at the end of this CYOA, and while you do not have to obey the restrictions in the options' descriptions it's a bit cheating not to. Good luck!",
+		"type": "single",
+		"required": true,
+		"choices": {
+			"diffEasy": {
+				"name": "Easy Mode",
+				"points": 40
+			},
+			"diffMedium": {
+				"name": "Medium Mode",
+				"points": 20
+			},
+			"diffHard": {
+				"name": "Hard Mode",
+				"points": 0
+			},
+			"diffSlave": {
+				"name": "Slave to the Show Mode",
+				"points": -150
+			},
+			"diffAnon": {
+				"name": "Anon Must Die Mode",
+				"desc": "Minimum of 3 owners, minimum of 5 punishments, maximum of 1 job.",
+				"points": -200,
+				"requires": {
+					"type": "and",
+					"choices": [
+						{
+							"type": "count",
+							"category": "owners",
+							"min": 3
+						},
+						{
+							"type": "count",
+							"category": "punishments",
+							"min": 5
+						},
+						{
+							"type": "count",
+							"category": "jobs",
+							"max": 1
+						}
+					]
+				},
+				"requiresFailWarning": true
+			}
+		}
+	},
+	"bodyType": {
+		"name": "Body Type",
+		"desc": "As part of the show, you will be given a completely new body for +40 credits. Alternatively, you can elect to keep your current body for +20 credits; ignore the rest of this section if you choose to do so. If you do choose to create a new body, you will need to freely decide whether you start with:",
+		"type": "single",
+		"required": true,
+		"choices": {
+			"newBody": {
+				"name": "Build-A-Body",
+				"desc": "You are creating your own custom base form from the provided list of options.",
+				"points": 40
+			},
+			"oldBody": {
+				"name": "Keep Your Old Body",
+				"desc": "You are going to keep the base form you inhabit right now.",
+				"points": 20
+			}
+		}
+	},
+	"bodyBase": {
+		"name": "Body Baseline",
+		"desc": "If your starting age is 10 - 17, you will start at a \"reduced\" version and \"grow into\" what you chose. Hyperfertile vaginas have a 100% pregnancy rate among the same species parents, a 20% chance of being impregnated by a father of a different species (half-human species are considered the same species genetically), and do not respond to chemical contraceptives. Each penis has its own set of testicles, however they can be removed if you don't want them. Embedded testicles overrides testicle size. Girth refers to diameter, in this case. Genitals determine sex: male is penis only, female is vagina only, futanari/hermaphrodite is both vagina and penis. If you look/act female but have a penis, you are considered a trap and can override non-male-only restrictions.",
+		"type": "table",
+		"requires": {
+			"type": "is",
+			"choice": "bodyType",
+			"value": "newBody"
+		},
+		"choices": {
+			"age": {
+				"name": "Age",
+				"options": [
+					"10-18",
+					"19-25",
+					"26-30",
+					"31-35",
+					"36-40",
+					"41-45",
+					"46-50",
+					"51-80"
+				]
+			},
+			"height": {
+				"name": "Height",
+				"options": [
+					"2'5\"-3'5\"",
+					"3'6\"-4'5\"",
+					"4'6\"-5'",
+					"5'1\"-5'5\"",
+					"5'6\"-6'",
+					"6'1\"-6'5\"",
+					"6'6\"-7'",
+					"7'1\"-10'"
+				]
+			},
+			"face": {
+				"name": "Face",
+				"options": [
+					"Handsome",
+					"Manly",
+					"Boyish",
+					"Androgynous",
+					"Girly",
+					"Womanly",
+					"Beautiful",
+					"Bimbo"
+				]
+			},
+			"chest": {
+				"name": "Chest",
+				"options": [
+					"Flat",
+					"A-Cup",
+					"B-Cup",
+					"C-Cup",
+					"D-Cup",
+					"E-Cup",
+					"F-Cup",
+					"> F-Cup"
+				]
+			},
+			"ass": {
+				"name": "Ass",
+				"options": [
+					"Flat",
+					"Petite",
+					"Normal",
+					"Apple",
+					"Bubble",
+					"Badonk",
+					"Wide",
+					"Double Wide"
+				]
+			},
+			"genitals": {
+				"name": "Genitals",
+				"options": [
+					"Penis",
+					"Sexless",
+					"Nonfertile Vagina",
+					"Fertile Vagina"
+				]
+			},
+			"penisSize": {
+				"name": "Penis Size",
+				"options": [
+					"1\"-3\"",
+					"3.1\"-6\"",
+					"6.1\"-10\"",
+					"10.1\"-16\""
+				]
+			},
+			"penisGirth": {
+				"name": "Penis Girth",
+				"options": [
+					"0.25\"-0.75\"",
+					"0.76\"-0.99\"",
+					"1\"-1.5\"",
+					"1.6\"-3\""
+				]
+			},
+			"testicleSize": {
+				"name": "Testicle Size",
+				"options": [
+					"Half Size",
+					"Normal Size",
+					"1.5x Size",
+					"Double Size"
+				]
+			}
+		}
+	},
+	"bodyMods": {
+		"name": "Body Mods",
+		"desc": "Pick as many as you wish.",
+		"type": "multi",
+		"choices": {
+			"addDick": {
+				"name": "Add Dick",
+				"desc": "Extra penises start at 5\" length/0.8\" girth.  One purchase allows any number of extra dicks.",
+				"points": -5,
+				"requires": {
+					"type": "not",
+					"choice": {
+						"type": "is",
+						"choice": "genitals",
+						"value": "Sexless"
+					}
+				},
+				"requireDesc": "Cannot be sexless",
+				"repeat": -1
+			},
+			"addTesticles": {
+				"name": "Add Testicles",
+				"desc": "Extra pairs of testacles start at normal size.  One purchase allows any number of pairs of testicles.  Requires at least one penis",
+				"points": -5,
+				"requires": {
+					"type": "or",
+					"choices": [
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Penis"
+						},
+						{
+							"type": "exists",
+							"choice": "addDick"
+						}
+					]
+				},
+				"requireDesc": "Requires at least one penis.",
+				"repeat": -1
+			},
+			"addBreasts": {
+				"name": "Add Breasts",
+				"desc": "Extra pairs of breasts start at B-cup.",
+				"points": -5,
+				"repeat": -1
+			},
+			"hyperFertileVagina": {
+				"name": "Hyperfertile Vagina",
+				"desc": "Your vagina will be *upgraded* to a hyperfertile version.  Requires a fertile vagina.",
+				"points": 10,
+				"requires": {
+					"type": "is",
+					"choice": "genitals",
+					"value": "Fertile Vagina"
+				},
+				"requireDesc": "Requires a fertile vagina"
+			},
+			"hormones": {
+				"name": "Hormones",
+				"desc": "You will receive hormone treatment to make your body more feminine physically.",
+				"points": -1
+			},
+			"hairRemoval": {
+				"name": "Hair Removal",
+				"desc": "We'll permanently remove any hair on your body that you don't want.",
+				"points": -1
+			},
+			"masochist": {
+				"name": "Masochist",
+				"desc": "You now feel pleasure from pain.",
+				"points": -3,
+				"addons": {
+					"amount": 1,
+					"extremeMasochist": {
+						"name": "Extreme Masochist",
+						"desc": "You still feel the pain, causing you to become 'confused'.  Requires Masochist",
+						"points": 2
+					},
+					"manualControl": {
+						"name": "Manual Control",
+						"desc": "You can choose whether or not you feel pleasure from pain.  Requires Masochist.",
+						"points": -2
+					}
+				}
+			},
+			"cumConnoisseur": {
+				"name": "Cum Connoisseur",
+				"desc": "You love the taste of semen.  Not only do you find it to be delicious, but it acts as an aphrodisiac that wears off after about an hour.",
+				"points": 1
+			},
+			"sensitiveBody": {
+				"name": "Sensitive Body",
+				"desc": "Your entire body is now extra sensitive.",
+				"points": 1,
+				"addons": {
+					"erogenousBody": {
+						"name": "Erogenous Body",
+						"desc": "Your entire body is now an erogenous zone.  Requires Sensitive Body.",
+						"points": 3,
+						"addons": {
+							"selectiveErogenousBody": {
+								"name": "Selective Erogenous Body",
+								"desc": "You can choose what parts of your body act as erogenous zones.  Requires Erogenous Body.",
+								"points": -3
+							},
+							"rightMomentErogenousBody": {
+								"name": "Right Moment Erogenous Body",
+								"desc": "Your body's erogenous zones will only be 'active' when you're horny.  Requires Erogenous Body.",
+								"points": -1
+							}
+						}
+					}
+				}
+			},
+			"amputee": {
+				"name": "Amputee",
+				"desc": "You can choose any of your four limbs to have cut off permanently.  Cannot be taken with Detachable Limbs or Android.",
+				"points": 15,
+				"type": "list",
+				"options": [
+					"Left Arm",
+					"Right Arm",
+					"Left Leg",
+					"Right Leg"
+				],
+				"optionsRepeat": false,
+				"requires": {
+					"type": "not",
+					"choice": {
+						"type": "and",
+						"choices": [
+							{
+								"type": "exists",
+								"choice": "detacableLimbs"
+							},
+							{
+								"type": "exists",
+								"choice": "android"
+							}
+						]
+					}
+				},
+				"addons": {
+					"amount": -1,
+					"accessible": {
+						"name": "Accessible",
+						"desc": "Your living space will be modified to make it more accessible to you.  Requires Apartment or higher.",
+						"points": -10,
+						"requires": {
+							"type": "is",
+							"choice": "housing",
+							"value": "apartment"
+						},
+						"requireDesc": "Requires Apartment"
+					},
+					"prosthetics": {
+						"name": "Prosthetics",
+						"desc": "Well will provide state of the art artificial limbs for all of your limbs that were cut off... after the show.",
+						"points": -20
+					},
+					"doubleAmputee": {
+						"unlisted": true,
+						"name": "Double Amuptee",
+						"points": 10,
+						"type": "auto",
+						"requires": {
+							"type": "and",
+							"choices": [
+								{
+									"type": "is",
+									"choice": "amputee",
+									"value": "Left Arm"
+								},
+								{
+									"type": "is",
+									"choice": "amputee",
+									"value": "Right Arm"
+								}
+							]
+						}
+					},
+					"quadAmputee": {
+						"unlisted": true,
+						"name": "Quadruple Amuptee",
+						"points": 30,
+						"type": "auto",
+						"requires": {
+							"type": "and",
+							"choices": [
+								{
+									"type": "is",
+									"choice": "amputee",
+									"value": "Left Arm"
+								},
+								{
+									"type": "is",
+									"choice": "amputee",
+									"value": "Right Arm"
+								},
+								{
+									"type": "is",
+									"choice": "amputee",
+									"value": "Left Leg"
+								},
+								{
+									"type": "is",
+									"choice": "amputee",
+									"value": "Right Leg"
+								}
+							]
+						}
+					}
+				}
+			},
+			"magicHair": {
+				"name": "Magic Hair",
+				"desc": "Your body will maintain a constant length of hair (on your head).",
+				"points": -1
+			},
+			"refractoryPeriod": {
+				"name": "Refractory Period",
+				"desc": "You no longer have to deal with a refractory period.",
+				"points": -1
+			},
+			"menstruationControl": {
+				"name": "Menstruation Control",
+				"desc": "You no longer have to deal with menstruation or its effects.",
+				"points": -1
+			},
+			"gagReflex": {
+				"name": "Gag Reflex",
+				"desc": "Your gag reflex is removed.",
+				"points": -1
+			},
+			"flexibleHoles": {
+				"name": "Flexible Holes",
+				"desc": "Makes all of your holes much more flexible than they would be naturally. Also increases natural lubrication.",
+				"points": -1,
+				"addons": {
+					"amount": 1,
+					"tightFit": {
+						"name": "Tight Fit",
+						"desc": "You can accomodate almost anything, but always just barely. Every time will be like the first.",
+						"points": 2
+					},
+					"easyFit": {
+						"name": "Easy Fit",
+						"desc": "You can accomodate anything with ease. Sit back and enjoy the ride.",
+						"points": -2
+					}
+				}
+			},
+			"openCervix": {
+				"name": "Open Cervix",
+				"desc": "Your womb can be entered with little effort. Requires a vagina.",
+				"points": -1,
+				"requires": {
+					"type": "or",
+					"choices": [
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Nonfertile Vagina"
+						},
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Fertile Vagina"
+						}
+					]
+				}
+			},
+			"fuckableNipples": {
+				"name": "Fuckable nipples",
+				"desc": "You can now have nipple sex.",
+				"points": -1
+			},
+			"tattoo": {
+				"name": "Tattoo",
+				"desc": "Add a tattoo anywhere on your body. Gives +1 credit for 'lewd' tattoos (e.g. a dick).",
+				"points": 1,
+				"repeat": -1
+			},
+			"piercing": {
+				"name": "Piercing",
+				"desc": "Add a piercing anywhere on your body. Gives +1 credit for piercings in the following 'lewd' locations: tongue, navel, nipples, clit, septum, vagina, penis(es).",
+				"points": 1,
+				"repeat": -1
+			},
+			"symbolShapedPupils": {
+				"name": "Symbol-shaped pupils",
+				"desc": "Change the shape of your pupils to whatever you want.",
+				"points": -1,
+				"addons": {
+					"indicator": {
+						"name": "Indicator",
+						"desc": "Your pupils will only change shape when you're horny.",
+						"points": -1
+					}
+				}
+			},
+			"heterochromia": {
+				"name": "Heterochromia",
+				"desc": "Select two eye colors (one for each eye) instead of one.",
+				"points": -1
+			},
+			"tentacleDick": {
+				"name": "Tentacle dick",
+				"desc": "Your penis(es) will be turned into prehensile tentacles. Requires at least one penis.",
+				"points": -2,
+				"requires": {
+					"type": "or",
+					"choices": [
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Penis"
+						},
+						{
+							"type": "exists",
+							"choice": "addDick"
+						}
+					]
+				},
+				"requireDesc": "Requires at least one penis."
+			},
+			"elasticTongue": {
+				"name": "Elastic tongue",
+				"desc": "You can now extend your tongue up to 12 inches outside of your mouth.",
+				"points": -2
+			},
+			"alwaysPerky": {
+				"name": "Always perky",
+				"desc": "You no longer need to wear a bra.",
+				"points": -1
+			},
+			"zincSupplements": {
+				"name": "Zinc supplements",
+				"desc": "Doubles your natural semen production. Requires at least one penis.",
+				"points": -1,
+				"requires": {
+					"type": "or",
+					"choices": [
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Penis"
+						},
+						{
+							"type": "exists",
+							"choice": "addDick"
+						}
+					]
+				},
+				"requireDesc": "Requires at least one penis."
+			},
+			"lactation": {
+				"name": "Lactation",
+				"desc": "Your body will be modified to make your breasts produce milk. Requires at least one set of A-cup or larger breasts.",
+				"points": -1,
+				"requires": {
+					"type": "not",
+					"choice": {
+						"type": "is",
+						"choice": "chest",
+						"value": "Flat"
+					}
+				},
+				"requireDesc": "Requires A-Cup or larger breasts.",
+				"addons": {
+					"highOuputLactate": {
+						"name": "High-Output Breast Milk",
+						"desc": "Doubles your natural breat milk production",
+						"points": -2
+					}
+				}
+			},
+			"easyDrainage": {
+				"name": "Easy Drainage",
+				"desc": "Your body now has a much higher volume when discharging fluids. You won't feel drained unless your body produces an unusally high amount of that fluid for some reason.",
+				"points": -2
+			},
+			"reloader": {
+				"name": "Reloader",
+				"desc": "After each orgasm, your body dramatically increased fluid production for a short time, making successive loads bigger instead of smaller.",
+				"points": -2
+			},
+			"easyPregnancy": {
+				"name": "Easy Pregnancy",
+				"desc": "Makes your pregnancies much more bearable.",
+				"requires": {
+					"type": "is",
+					"choice": "genitals",
+					"value": "Fertile Vagina"
+				},
+				"requireDesc": "Requires a fertile vagina",
+				"points": -3,
+				"addons": {
+					"amount": 1,
+					"pleasurablePregnancy": {
+						"name": "Pleasurable Pregnancy",
+						"desc": "During your pregnancy, your orgasms will be stronger and you will become more lustful. Giving birth will almost certainly cause you to climax several times.",
+						"points": -2
+					},
+					"preferredSize": {
+						"name": "Preferred Size",
+						"desc": "Your belly will stop swelling after bewteen 6-9 months (your choice).",
+						"points": -2
+					},
+					"fastPregnancy": {
+						"name": "Fast Pregnancy",
+						"desc": "Increases the speed of pregnancyies by an average of 80%",
+						"points": -10
+					}
+				}
+			},
+			"healthyBabies": {
+				"name": "Healthy Babies",
+				"desc": "Your babies will be strong and healthy.",
+				"requires": {
+					"type": "is",
+					"choice": "genitals",
+					"value": "Fertile Vagina"
+				},
+				"requireDesc": "Requires a fertile vagina",
+				"points": -1,
+				"addons": {
+					"amount": -1,
+					"geneticModificationBabies": {
+						"name": "Genetic Modification",
+						"desc": "You will be able to customize your baby. Use the body modification section.",
+						"points": -5
+					},
+					"growthHormonesBabies": {
+						"name": "Growth Hormones",
+						"desc": "Your children will grow at an accelerated rate until they reach 5-16 (your choice). The accelerated growth rate is approximately 1 year per week.",
+						"points": -8
+					}
+				}
+			},
+			"embeddedTesticles": {
+				"name": "Embedded Testicles",
+				"desc": "Some (or all) of your testciles will be embedded inside your body. Excess skin will be removed.",
+				"points": -2,
+				"requires": {
+					"type": "or",
+					"choices": [
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Penis"
+						},
+						{
+							"type": "exists",
+							"choice": "addDick"
+						}
+					]
+				},
+				"requireDesc": "Requires at least one pair of testicles."
+			},
+			"retractablePenis": {
+				"name": "Retractable Penis",
+				"desc": "You can \"retract\" your penis(es) into your body to conceal them.",
+				"points": -2,
+				"requires": {
+					"type": "or",
+					"choices": [
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Penis"
+						},
+						{
+							"type": "exists",
+							"choice": "addDick"
+						}
+					]
+				},
+				"requireDesc": "Requires at least one penis."
+			},
+			"flexibleBody": {
+				"name": "Flexible Body",
+				"desc": "Your body is much more flexible. Good for yoga and doing splits.",
+				"points": -3
+			},
+			"reducedSleep": {
+				"name": "Reduced Sleep",
+				"desc": "Instead of 8 to 12 hours, your body can easily work with only needing to sleep for 4 hours.",
+				"points": -3,
+				"addons": {
+					"noSleep": {
+						"name": "No Sleep",
+						"desc": "You no longer need to sleep. You won't feel tired from a lack of sleep.",
+						"points": -5
+					}
+				}
+			},
+			"perfectMetabolism": {
+				"name": "Perfect metabolism",
+				"desc": "Maintaining muscle ton'body condition is trivial, however you must consume at least 2,300 calories a day.",
+				"points": -5,
+				"addons": {
+					"amount": -1,
+					"opimizedDigestionD": {
+						"name": "Optimized Digestion D",
+						"desc": "You no longer need to defecate.",
+						"points": -3
+					},
+					"opimizedDigestionU": {
+						"name": "Optimized Digestion U",
+						"desc": "You no longer need to urinate.",
+						"points": -3
+					}
+				}
+			},
+			"cleanliness": {
+				"name": "Cleanliness",
+				"desc": "You no longer need to shower/bathe. Also includes some \"internal parts\", such as teeth.",
+				"points": -5
+			},
+			"homeostasis": {
+				"name": "Perfect Homeostasis",
+				"desc": "Your body will maintain it's internal temperature perfectly, meaning you no longer need to wear clothes, even in sub-zero temperatures.",
+				"points": -10
+			},
+			"mindWipe": {
+				"name": "Mind Wipe",
+				"desc": "All of your memories from before you became a contestant will be permanently wiped. Note that this only affects your memories; you will retain all of your knowledge of things (e.g. how to ride a bike).",
+				"points": 10,
+				"addons": {
+					"amount": -1,
+					"tabulaRasa": {
+						"name": "Tabula Rasa",
+						"desc": "All of your knolwedge will be reset to the \"general knowledge\" of your age group as well.",
+						"points": 15
+					},
+					"dissonance": {
+						"name": "Dissonance",
+						"desc": "Your previous memories will be restored after the show. Have fun with that.",
+						"points": 10
+					}
+				}
+			},
+			"detacableLimbs": {
+				"name": "Detachable Limbs",
+				"desc": "Both of your arms and legs are removable now. It is up to you to find/purchase different limbs, but it probably isn't that hard to find them online somewhere.",
+				"points": -10,
+				"requires": {
+					"type": "not",
+					"choice": {
+						"type": "exists",
+						"choice": "amputee"
+					}
+				},
+				"requireDesc": "Cannot be taken with amputee"
+			},
+			"detacablePenis": {
+				"name": "Detachable Penis",
+				"desc": "Your penis(es) are removable now. Any dildo you attach in place will be fully functional.",
+				"points": -3,
+				"requires": {
+					"type": "or",
+					"choices": [
+						{
+							"type": "is",
+							"choice": "genitals",
+							"value": "Penis"
+						},
+						{
+							"type": "exists",
+							"choice": "addDick"
+						}
+					]
+				},
+				"requireDesc": "Requires at least one penis."
+			}
+		}
+	}
 }
