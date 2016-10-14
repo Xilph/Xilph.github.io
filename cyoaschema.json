@@ -1,0 +1,396 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "CYOA",
+    "description": "A CYOA for the CYOA tool",
+    "definitions": {
+        "keyList": {
+            "description": "List of keys from object",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "choiceRef": {
+            "description": "String referencing a specific choice",
+            "type": "string",
+            "pattern": "^\\w+(\\.\\w+)*$"
+        },
+        "requires": {
+            "oneOf": [
+                {
+                    "description": "Checks if any of or all of the listed requirements are matched",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "type",
+                        "choices"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "and",
+                                "or"
+                            ]
+                        },
+                        "choices": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/requires"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Checks if the listed requirement isn't matched",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "type",
+                        "choice"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "not"
+                            ]
+                        },
+                        "choice": {
+                            "$ref": "#/definitions/requires"
+                        }
+                    }
+                },
+                {
+                    "description": "Checks if a specific choice has a specific value",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "type",
+                        "choice",
+                        "value"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "is"
+                            ]
+                        },
+                        "choice": {
+                            "$ref": "#/definitions/choiceRef"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "description": "Checks if a specific choice was taken at all",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "type",
+                        "choice"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "exists"
+                            ]
+                        },
+                        "choice": {
+                            "$ref": "#/definitions/choiceRef"
+                        }
+                    }
+                },
+                {
+                    "description": "Checks if a certain amount of choices within a category were taken",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "type",
+                        "category"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "count"
+                            ]
+                        },
+                        "category": {
+                            "$ref": "#/definitions/choiceRef"
+                        },
+                        "min": {
+                            "description": "Inclusive minimum, -1 = no cap",
+                            "type": "integer",
+                            "default": -1
+                        },
+                        "max": {
+                            "description": "Inclusive maximum, -1 = no cap",
+                            "type": "integer",
+                            "default": -1
+                        }
+                    }
+                }
+            ]
+        },
+        "basicContainer": {
+            "type": "object",
+            "description": "A template for a section of the CYOA",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "desc": {
+                    "description": "Either a string describing the section or an array of strings which will be separated by newlines.",
+                    "type": [
+                        "string",
+                        "array"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "required": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "requires": {
+                    "$ref": "#/definitions/requires"
+                },
+                "requiresDesc": {
+                    "type": "string"
+                },
+                "requiresFailWarning": {
+                    "description": "Whether to only flag as invalid at the end, instead of requiring for choice to be taken",
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "nestableChoice": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/basicContainer"
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "points"
+                    ],
+                    "properties": {
+                        "points": {
+                            "description": "How much points it costs/gives, note value is added, so -3 is a cost of 3 and 3 is +3 points",
+                            "type": "integer"
+                        },
+                        "repeat": {
+                            "description": "How many times it can be taken, -1 for unlimited",
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "unlisted": {
+                            "description": "Whether or not to list as an option during purchasing, will still be listed in total, only really useful with auto",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "type": {
+                            "description": "Controls type of choice, list gives a selection out of a set of options, auto automatically purchases if allowed",
+                            "type": "string",
+                            "enum": [
+                                "list",
+                                "auto"
+                            ]
+                        },
+                        "options": {
+                            "description": "For use with list, defines what options are available in the list",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "optionsRepeat": {
+                            "description": "For use with list/options and repeats, controls if options can be taken multiple times or each repeat must be unique",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "addons": {
+                            "description": "For addons/upgrades to a choice",
+                            "type": "object",
+                            "properties": {
+                                "amount": {
+                                    "description": "Amount of addons that can be taken, -1 is unlimited",
+                                    "type": "integer",
+                                    "default": -1
+                                }
+                            },
+                            "additionalProperties": {
+                                "$ref": "#/definitions/nestableChoice"
+                            }
+                        }
+                    },
+                    "dependencies": {
+                        "optionsRepeat": [
+                            "options"
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "order": {
+            "$ref": "#/definitions/keyList"
+        },
+        "usepoints": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "additionalProperties": {
+        "oneOf": [
+            {
+                "allOf": [
+                    {
+                        "$ref": "#/definitions/basicContainer"
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "type": {
+                                "description": "If type is cosmetic, section purely exists as a text block",
+                                "type": "string",
+                                "enum": [
+                                    "cosmetic"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "allOf": [
+                    {
+                        "$ref": "#/definitions/basicContainer"
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "type": {
+                                "description": "How to treat the choices, single as only one out of the choices",
+                                "type": "string",
+                                "enum": [
+                                    "single"
+                                ]
+                            },
+                            "choices": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/definitions/basicContainer"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "required": [
+                                                "points"
+                                            ],
+                                            "properties": {
+                                                "points": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "allOf": [
+                    {
+                        "$ref": "#/definitions/basicContainer"
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "type": {
+                                "description": "How to treat the choices, multi as a collection of independent choices",
+                                "type": "string",
+                                "enum": [
+                                    "multi"
+                                ]
+                            },
+                            "choices": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "$ref": "#/definitions/nestableChoice"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "allOf": [
+                    {
+                        "$ref": "#/definitions/basicContainer"
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "type": {
+                                "description": "How to treat the choices, this schema variant for table of options",
+                                "type": "string",
+                                "enum": [
+                                    "table"
+                                ]
+                            },
+                            "order": {
+                                "$ref": "#/definitions/keyList"
+                            },
+                            "choices": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "options": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "minItems": 1
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
